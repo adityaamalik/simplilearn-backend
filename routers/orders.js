@@ -5,12 +5,17 @@ const router = express.Router();
 require("dotenv").config();
 
 router.get(`/`, async (req, res) => {
-  const userList = await User.find().select("-password");
+  let filter = {};
+  if (req.query.userId) {
+    filter = { userId: req.query.userId };
+  }
 
-  if (!userList) {
+  const orderList = await Order.find(filter);
+
+  if (!orderList) {
     res.status(500).json({ success: false });
   }
-  res.status(200).send(userList);
+  res.send(orderList);
 });
 
 router.get("/:id", async (req, res) => {
